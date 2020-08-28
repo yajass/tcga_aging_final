@@ -1,3 +1,4 @@
+library(pheatmap)
 library(ggsci)
 library(dplyr)
 library(ggcorrplot)
@@ -10,7 +11,6 @@ library(clusterProfiler)
 library(TCGAbiolinks)
 library(tibble)
 library(SummarizedExperiment)
-library(wateRmelon)
 library(limma)
 library(edgeR)
 library(ggpubr)
@@ -23,7 +23,7 @@ library(fgsea)
 source("/Users/Yajas/Documents/Elemento/tcga_aging_final/R_scripts/R/Fig.1/clinical_attributes_os_stage.R")
 survival_data <- survival_data[survival_data$Quartiles %in% c(1,4), ]
 survival_data$Quartiles <- ifelse(survival_data$Quartiles == 1, "Young", "Old")
-pathways <- gmtPathways("/Users/Yajas/Documents/Elemento/tcga_aging_final/Data/GSEA_pathways/KEGG-Cancer_Pathways_Proliferation")
+pathways <- gmtPathways("/Users/Yajas/Documents/Elemento/tcga_aging_final/Data/GSEA_pathways/Cancer_Pathways_Proliferation.gmt")
 
 # Setup functions
 ########################################################################################################################
@@ -117,10 +117,12 @@ results_gsea <- differentialEpression()
 # Combine and plot
 ########################################################################################################################
 nes <- data.frame(lapply(results_gsea, function (x) x$NES),
-                  row.names = gsub('\\_',' ', substring(results_gsea$BRCA$pathway, 6)),
+                  row.names = results_gsea$BRCA$pathway,
+                  # row.names = gsub('\\_',' ', substring(results_gsea$BRCA$pathway, 6)),
                   stringsAsFactors = F)
 fdr <- data.frame(lapply(results_gsea, function (x) x$padj),
-                  row.names = gsub('\\_',' ', substring(results_gsea$BRCA$pathway, 6)),
+                  row.names = results_gsea$BRCA$pathway,
+                  # row.names = gsub('\\_',' ', substring(results_gsea$BRCA$pathway, 6)),
                   stringsAsFactors = F)
 nes[fdr >= 0.05] <- 0
 fdr[fdr >= 0.05] <- 1

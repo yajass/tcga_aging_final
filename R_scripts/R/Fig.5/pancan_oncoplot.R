@@ -32,8 +32,8 @@ for (i in 1:length(cancer_code)) {
 # Create MAF file for samples of interest after removing FLAGS
 tumor_maf$Tumor_Sample_Barcode <- substr(tumor_maf$Tumor_Sample_Barcode,1,12)
 tumor_maf <- tumor_maf %>% 
-  filter(!Hugo_Symbol %in% flags) %>% 
-  filter(Tumor_Sample_Barcode %in% survival_data$Tumor_Sample_Barcode)
+  dplyr::filter(!Hugo_Symbol %in% flags) %>% 
+  dplyr::filter(Tumor_Sample_Barcode %in% survival_data$Tumor_Sample_Barcode)
 colnames(survival_data)[3] <- "Tumor Type"
 colnames(survival_data)[36] <- "Age"
 MAF <- read.maf(maf = tumor_maf, clinicalData = survival_data)

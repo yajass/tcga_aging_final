@@ -51,19 +51,19 @@ temp_res$variable <- ifelse(temp_res$variable == "REACTOME FORMATION OF SENESCEN
 
 ggscatter(data = temp_res[temp_res$variable != "COURTOIS SENESCENCE TRIGGERS", ], x = 'variable', y = 'neglogfdr',
           shape = 'Higher_Med', color = 'Type',
-          size = 'neglogfdr', palette = "jama") +
+          size = 'neglogfdr', palette = "jama", stroke = 5) +
   geom_hline(yintercept = -log10(0.05), lty = 2, lwd = 1) +
   scale_size(range = c(1, 20), guide = FALSE) +
   scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 7)) +
   scale_shape_manual(values = c(16, 1)) +
-  labs(x = NULL, y = expression(-log[10]~FDR), shape = "Age", color = "Cancer Type") +
+  labs(x = NULL, y = expression(-log[10]~FDR~Young/Old), shape = "Enrichment", color = "Cancer Type") +
   # coord_flip() +
-  theme_pubclean(35) +
+  theme_pubclean(44) +
   theme(legend.position = "top",
         legend.direction = "horizontal") +
   guides(color = guide_legend(override.aes = list(size = 20),
                               nrow = 1, by.row = TRUE),
          shape = guide_legend(override.aes = list(size = 20)))
-ggsave("/Users/Yajas/Documents/Elemento/tcga_aging_final/Results/Figures/Fig.2/Senescence_ssGSEA_TPM_TCGA.eps", dpi = 320,
-       height = 13, width = 39)
+ggsave("/Users/Yajas/Documents/Elemento/tcga_aging_final/Results/Figures/Fig.2/Senescence_ssGSEA_TPM_TCGA_new.eps", dpi = 320,
+       height = 14.5, width = 44)
 

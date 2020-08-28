@@ -105,4 +105,3 @@ ggboxplot(combined, x = 'Age', y = 'value', fill = 'Age', palette = 'jco', ylab 
                                      axis.ticks.x = element_blank(),
                                      legend.position = "none")
 ggsave("/Users/Yajas/Documents/Elemento/tcga_aging_final/Results/Figures/Fig.5/ucec_variants.eps")
-

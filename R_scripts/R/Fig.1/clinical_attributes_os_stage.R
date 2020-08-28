@@ -80,10 +80,36 @@ ggplot(data = results_df, aes(x = Cancer, y = hazard_ratio, ymin = lower_ci, yma
 #            file = "/Users/Yajas/Documents/Elemento/tcga_aging_final/Results/Tables/Supplementary Table SXX - Overall Survival.xlsx")
 
 
+# write table for quartile age limits
+# survival_data %>%
+#   dplyr::mutate(Age_Group = ifelse(Subtype_Quartile == "Q1", "Young",
+#                                    ifelse(Subtype_Quartile == "Q4", "Old", "Middle Aged"))) %>%
+#   dplyr::select(type, age_at_initial_pathologic_diagnosis,Age_Group) %>%
+#   dplyr::filter(Age_Group %in% c("Young", "Old"),
+#                 type %in% as.character(results_df$Cancer[results_df$sig == "< 0.01"])) %>%
+#   dplyr::group_by(type, Age_Group) %>%
+#   dplyr::summarise(Minimum = min(age_at_initial_pathologic_diagnosis),
+#                    Maximum = max(age_at_initial_pathologic_diagnosis),
+#                    Mean = mean(age_at_initial_pathologic_diagnosis),
+#                    Median = median(age_at_initial_pathologic_diagnosis)) %>%
+#   write.xlsx(., file = "/Users/Yajas/Documents/Elemento/tcga_aging_final/Results/Tables/Supplementary Table SXX - Age Quartiles.xlsx")
+
+
+# plot KM for types of interest
+plt.surv <- survival_data %>%
+  dplyr::filter(type %in% c("BRCA", "COAD", "LGG", "THCA", "OV", "UCEC"),
+                Quartiles %in% c(1,4)) %>%
+  dplyr::mutate(Quartiles = ifelse(Quartiles == 1, "Young", "Old"))
+fit <- survfit(Surv(OS.time, OS) ~ Quartiles + type, data = plt.surv)
+ggsurvplot(fit, linetype = rep(c("solid", "dashed"), 6),
+           palette = rep(ggsci::pal_aaas()(6), each = 2), legend = "none",
+           size = 2.5, font.x =  16, font.y =  16, font.ticks = 12, theme = "transparent")
+# ggsave("/Users/Yajas/Documents/Elemento/tcga_aging_final/Results/Figures/graphical.abstract/survival_curves.jpg", bg = "transparent")
+
 # check if age is associated with tumor stage
 # need to collate tumor stage columns
 surv_data_1 <- survival_data[survival_data$Subtype_Quartile %in% c("Q1", "Q4") &
-                               survival_data$type %in% c('BRCA','COAD','THCA','SARC','UCEC',
+                               survival_data$type %in% c('BRCA','COAD','THCA','UCEC',
                                                          'OV','LGG'), ]
 surv_data_1$ajcc_pathologic_tumor_stage <- ifelse(startsWith(surv_data_1$ajcc_pathologic_tumor_stage, "Stage IV"), "Stage IV",
                                                   ifelse(startsWith(surv_data_1$ajcc_pathologic_tumor_stage, "Stage III"), "Stage III",
@@ -139,5 +165,5 @@ ggplot(data = fisher.res, aes(x = group, y = estimate, ymin = conf.low, ymax = c
   coord_flip() +
   theme(axis.text.y = element_text(size = 15),
         axis.text.x = element_text(size = 15))
-# ggsave("/Users/Yajas/Documents/Elemento/tcga_aging_final/Results/Figures/Fig.1/age_stage_or.jpg", dpi = 320)
+# ggsave("/Users/Yajas/Documents/Elemento/tcga_aging_final/Results/Figures/Fig.S1/age_stage_or.jpg", dpi = 320)
 rm(list=c("cancer_code","cancerDF", "fisher.res", "i", "levs", "results_df", "subsetData", "surv_data_1", "surv_result"))
